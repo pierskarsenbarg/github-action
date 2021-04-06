@@ -5,5 +5,7 @@ import * as awsx from "@pulumi/awsx";
 // Create an AWS resource (S3 Bucket)
 const bucket = new aws.s3.Bucket("my-bucket");
 
+const bucket2 = new aws.s3.Bucket("bucket2");
+
 // Export the name of the bucket
 export const bucketName = bucket.id;
