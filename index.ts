@@ -9,3 +9,4 @@ const bucket2 = new aws.s3.Bucket("bucket2");
 
 // Export the name of the bucket
 export const bucketName = bucket.id;
+export const bucket2Name = bucket2.id;
