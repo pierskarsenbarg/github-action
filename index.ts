@@ -2,11 +2,22 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
-// Create an AWS resource (S3 Bucket)
-const bucket = new aws.s3.Bucket("my-bucket");
+const repo = new awsx.ecr.Repository("repo");
 
-const bucket2 = new aws.s3.Bucket("bucket2");
+const image = repo.buildAndPushImage("./app");
 
-// Export the name of the bucket
-export const bucketName = bucket.id;
-export const bucket2Name = bucket2.id;
+const cluster = new awsx.ecs.Cluster("pk-cluster");
+const lb = new awsx.lb.ApplicationListener("express", { port: 80 });
+const service = new awsx.ecs.FargateService("service", {
+    taskDefinitionArgs: {
+        containers: {
+            express: {
+                image,
+                memory: 128,
+                portMappings: [lb]
+            }
+        }
+    }
+})
+
+export const url = lb.endpoint.hostname;
